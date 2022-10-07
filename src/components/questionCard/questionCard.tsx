@@ -1,32 +1,44 @@
-import { Box, Flex, Badge } from "@chakra-ui/react";
+import { Box, Flex, Badge, Text } from "@chakra-ui/react";
+import { MdFormatQuote } from "react-icons/md";
 
 type Props = {
-  id: number;
-  question: string;
-  category: string;
-  deepness: number;
+  question: {
+    id: number;
+    question: string;
+    category?: string;
+    deepness?: number;
+  };
 };
 
-const QuestionCard = () => {
+const QuestionCard = ({ question }: Props) => {
   return (
     <Flex
       pos="relative"
       w="100%"
-      minH="100px"
+      minH="180px"
       borderRadius="lg"
       overflow="hidden"
-      p="3"
+      p="6"
       py="26px"
       boxShadow="dark-lg"
       justifyContent="center"
       alignItems="center"
       bg="gray.700"
     >
-      <Box>What's your favorite way to spend a day off?</Box>
-      <Badge pos="absolute" bottom="6px">
-        Likes
-      </Badge>
-      <Badge>3</Badge>
+      <MdFormatQuote size="150px" />
+      <Text fontSize="3xl">{question.question}</Text>
+      {question.category && (
+        <Badge pos="absolute" bottom="6px" right="8px">
+          {question.category}
+        </Badge>
+      )}
+      {question.deepness && (
+        <Badge pos="absolute" top="6px" right="8px">
+          {question.deepness}
+        </Badge>
+      )}
+
+      {/* <Badge>3</Badge> */}
     </Flex>
   );
 };
