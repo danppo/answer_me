@@ -25,8 +25,8 @@ const QuestionCard = ({ question }: Props) => {
       alignItems="center"
       bg="gray.700"
     >
-      <MdFormatQuote size="150px" />
-      <Text fontSize="3xl">{question.question}</Text>
+      {/* <MdFormatQuote size="150px" /> */}
+      <Text fontSize="2xl">{question.question}</Text>
       {question.category && (
         <Badge pos="absolute" bottom="6px" right="8px">
           {question.category}
@@ -37,8 +37,6 @@ const QuestionCard = ({ question }: Props) => {
           {question.deepness}
         </Badge>
       )}
-
-      {/* <Badge>3</Badge> */}
     </Flex>
   );
 };

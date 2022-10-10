@@ -10,11 +10,13 @@ import {
   Badge,
   ButtonGroup,
   IconButton,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { MdBuild, MdCall, MdFilterList, MdRedo } from "react-icons/md";
 
 import { useEffect, useState } from "react";
 import QuestionCard from "../components/questionCard";
+import Filter from '../components/filter';
 
 import questionData from "../questions.json";
 
@@ -36,13 +38,10 @@ const Questions = () => {
     initialQuestionState,
   ]);
   const [gameStarted, setGameStarted] = useState(false);
-  const [availableQuestionList, setAvailableQuestionList] =
-    useState<Question[]>(questionData);
-  // const [availableQuestionList, setAvailableQuestionList] = useState<any[]>([
-  //   "a",
-  //   "b",
-  //   "c",
-  // ]);
+  const [availableQuestionList, setAvailableQuestionList] = useState<Question[]>(questionData);
+  const [selectedCats, setSelectedCats] = useState<string[]>([]);
+  const { isOpen, onToggle } = useDisclosure()
+
 
   useEffect(() => {
     const tempCat: string[] = [];
@@ -79,12 +78,17 @@ const Questions = () => {
     }
   };
 
+  const filterToggle = () => {
+
+  }
+
   return (
     <VStack spacing={8}>
       <QuestionCard question={questionHistory[0]} />
 
       <ButtonGroup gap="2" width="100%">
         <IconButton
+          onClick={onToggle}
           aria-label="Search database"
           icon={<MdFilterList />}
           height="56px"
@@ -105,35 +109,14 @@ const Questions = () => {
           height="56px"
           width="74px"
         />
-        {/* <Button colorScheme="teal" size="lg" variant="outline" width="200%">
-          Skip
-        </Button>
-        <Button colorScheme="teal" size="lg" variant="outline" width="200%">
-          Skip
-        </Button> */}
       </ButtonGroup>
-      <Select placeholder="Select option">
-        <option value="option1">Option 1</option>
-        <option value="option2">Option 2</option>
-        <option value="option3">Option 3</option>
-      </Select>
-      <Select placeholder="Select option">
-        <option value="option1">Option 1</option>
-        <option value="option2">Option 2</option>
-        <option value="option3">Option 3</option>
-      </Select>
-      <Text>
-        Edit <Code fontSize="xl">src/App.tsx</Code> and save to reload.
-      </Text>
-      <Link
-        color="teal.500"
-        href="https://chakra-ui.com"
-        fontSize="2xl"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Learn Chakra
-      </Link>
+
+    {isOpen && 
+      <Filter categories={categoryList} selectedCats={setSelectedCats}/>   
+    }
+
+
+
     </VStack>
   );
 };
