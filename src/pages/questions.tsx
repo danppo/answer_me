@@ -1,22 +1,10 @@
-import {
-  Box,
-  Flex,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Select,
-  Button,
-  Badge,
-  ButtonGroup,
-  IconButton,
-  useDisclosure,
-} from "@chakra-ui/react";
-import { MdBuild, MdCall, MdFilterList, MdRedo } from "react-icons/md";
+import { VStack, Button, ButtonGroup, IconButton } from "@chakra-ui/react";
+import { MdRedo } from "react-icons/md";
 
 import { useEffect, useState } from "react";
 import QuestionCard from "../components/questionCard";
-import Filter from '../components/filter';
+import Filter from "../components/filter";
+import QuestionHistory from "../components/questionHistory";
 
 import questionData from "../questions.json";
 
@@ -28,20 +16,18 @@ interface Question {
 }
 
 const Questions = () => {
-  const initialQuestionState = {
-    id: -1,
-    question: "Press the button for the first question",
-  };
+  const [message, setMessage] = useState<string>(
+    "Press the button for the first question"
+  );
   const [categoryList, setCategoryList] = useState<string[]>([]);
   const [depthLevelList, setDepthLevelList] = useState<number[]>([]);
-  const [questionHistory, setQuestionHistory] = useState<Question[]>([
-    initialQuestionState,
-  ]);
+  const [questionHistory, setQuestionHistory] = useState<Question[]>([]);
   const [gameStarted, setGameStarted] = useState(false);
-  const [availableQuestionList, setAvailableQuestionList] = useState<Question[]>(questionData);
+  const [availableQuestions, setAvailableQuestions] =
+    useState<Question[]>(questionData);
+  const [filteredQuestions, setFilteredQuestions] = useState<Question[]>([]);
   const [selectedCats, setSelectedCats] = useState<string[]>([]);
-  const { isOpen, onToggle } = useDisclosure()
-
+  const [showHistory, setShowHistory] = useState(false);
 
   useEffect(() => {
     const tempCat: string[] = [];
@@ -59,41 +45,70 @@ const Questions = () => {
     setDepthLevelList(tempLevel.sort());
   }, []);
 
+  useEffect(() => {
+    console.log(selectedCats);
+    const tempQuestions: Question[] = [];
+    if (categoryList.length === selectedCats.length) {
+      setFilteredQuestions(availableQuestions);
+    } else {
+      availableQuestions.forEach((q) => {
+        if (q.category && selectedCats.includes(q.category)) {
+          tempQuestions.push(q);
+        }
+      });
+
+      if (selectedCats.length > 0) {
+        setFilteredQuestions(tempQuestions);
+      }
+    }
+    console.log(filteredQuestions.length);
+    console.log(availableQuestions.length);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCats, availableQuestions]);
+
   // console.log(categoryList);
   // console.log(depthLevelList);
 
   const handleNextQuestion = () => {
-    const length = availableQuestionList.length;
-    const chosen = Math.floor(Math.random() * length);
-    const question = availableQuestionList[chosen];
-    const tempArray = [...availableQuestionList];
-    tempArray.splice(chosen, 1);
-    setAvailableQuestionList(tempArray);
+    const length = filteredQuestions.length;
+    console.log(length);
 
-    if (gameStarted) {
+    if (length > 0) {
+      const chosen = Math.floor(Math.random() * length);
+      const question = filteredQuestions[chosen];
+      const tempArray = [...filteredQuestions];
+      tempArray.splice(chosen, 1);
+      setFilteredQuestions(tempArray);
+
+      setAvailableQuestions(
+        availableQuestions.filter((q) => q.id !== question.id)
+      );
+
       setQuestionHistory((current) => [question, ...current]);
+      if (!gameStarted) {
+        setGameStarted(true);
+        setMessage("");
+      }
     } else {
-      setQuestionHistory([question]);
-      setGameStarted(true);
+      setMessage(
+        "No more questions left, either change the filter settings or rest all the questions"
+      );
     }
   };
 
-  const filterToggle = () => {
-
-  }
-
   return (
-    <VStack spacing={8}>
-      <QuestionCard question={questionHistory[0]} />
+    <VStack spacing={8} w="100%" className="Stack">
+      <IconButton
+        aria-label="Skip question"
+        icon={<MdRedo />}
+        alignSelf="end"
+        onClick={() => setShowHistory(!showHistory)}
+      />
+      {showHistory && <QuestionHistory questionList={questionHistory} />}
+      <QuestionCard question={questionHistory[0]} message={message} />
 
       <ButtonGroup gap="2" width="100%">
-        <IconButton
-          onClick={onToggle}
-          aria-label="Search database"
-          icon={<MdFilterList />}
-          height="56px"
-          width="74px"
-        />
+        <Filter categories={categoryList} selectedCats={setSelectedCats} />
         <Button
           onClick={handleNextQuestion}
           colorScheme="teal"
@@ -104,19 +119,12 @@ const Questions = () => {
           {gameStarted ? "Next Question" : "Let's start"}
         </Button>
         <IconButton
-          aria-label="Search database"
+          aria-label="Skip question"
           icon={<MdRedo />}
           height="56px"
           width="74px"
         />
       </ButtonGroup>
-
-    {isOpen && 
-      <Filter categories={categoryList} selectedCats={setSelectedCats}/>   
-    }
-
-
-
     </VStack>
   );
 };

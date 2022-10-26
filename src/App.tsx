@@ -1,16 +1,32 @@
 // import * as React from "react";
 import { ChakraProvider, Flex, Grid } from "@chakra-ui/react";
-import { ColorModeSwitcher } from "./ColorModeSwitcher";
+// import { ColorModeSwitcher } from "./components/colorSwitcher/ColorModeSwitcher";
 import Questions from "./pages/questions";
+import Header from "./pages/header";
+import Footer from "./pages/footer";
 import theme from "./theme";
 
 export const App = () => (
   <ChakraProvider theme={theme}>
-    <Flex textAlign="center" justifyContent="center" fontSize="xl">
-      <Grid minH="100vh" w="xl" p={3}>
-        <ColorModeSwitcher justifySelf="flex-end" />
+    <Flex
+      textAlign="center"
+      justifyContent="center"
+      fontSize="xl"
+      style={{ position: "relative" }}
+      className="AppFlex"
+    >
+      <Flex
+        minH="100vh"
+        w="xl"
+        p={3}
+        alignItems="center"
+        direction="column"
+        justify="space-between"
+      >
+        <Header />
         <Questions />
-      </Grid>
+        <Footer />
+      </Flex>
     </Flex>
   </ChakraProvider>
 );

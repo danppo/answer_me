@@ -1,5 +1,4 @@
-import { Box, Flex, Badge, Text } from "@chakra-ui/react";
-import { MdFormatQuote } from "react-icons/md";
+import { Flex, Badge, Text } from "@chakra-ui/react";
 
 type Props = {
   question: {
@@ -8,9 +7,10 @@ type Props = {
     category?: string;
     deepness?: number;
   };
+  message?: string;
 };
 
-const QuestionCard = ({ question }: Props) => {
+const QuestionCard = ({ question, message }: Props) => {
   return (
     <Flex
       pos="relative"
@@ -26,13 +26,13 @@ const QuestionCard = ({ question }: Props) => {
       bg="gray.700"
     >
       {/* <MdFormatQuote size="150px" /> */}
-      <Text fontSize="2xl">{question.question}</Text>
-      {question.category && (
+      <Text fontSize="2xl">{message ? message : question.question}</Text>
+      {!message && question.category && (
         <Badge pos="absolute" bottom="6px" right="8px">
           {question.category}
         </Badge>
       )}
-      {question.deepness && (
+      {!message && question.deepness && (
         <Badge pos="absolute" top="6px" right="8px">
           {question.deepness}
         </Badge>
