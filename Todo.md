@@ -3,18 +3,17 @@
 - ~~Create Footer~~
 - ~~Move darkmode button and icons~~
 - ~~fix lightmode card~~
-- refresh question after cats selected
 - ~~Show history scroll~~
-- allow skip button
-- show skipped in history
+- ~~allow skip button~~
+- ~~show skipped in history~~
 - ~~fix app height to vh~~
-- reset question when catagory selected
-- show if cats are empty
+- ~~Hide depth level~~
+- refresh question after cats selected
+- show if cats are empty in the modal remaining numbers?
 - Settings Modal
 - History numbers
 - History scroll location indicator
-- Hide depth level
-
+-
 - make 2 person mode
 - copy question to clipboard
 - add logic to get questions deeper

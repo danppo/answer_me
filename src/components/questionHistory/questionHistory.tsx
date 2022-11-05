@@ -1,22 +1,16 @@
-import { useEffect, useState } from "react";
-import QuestionCard from "../questionCard";
-import { VStack } from "@chakra-ui/react";
-import styles from "./questionHistory.module.scss";
-
-interface Question {
-  id: number;
-  question: string;
-  category?: string;
-  deepness?: number;
-}
+import { useEffect, useState } from 'react';
+import QuestionCard from '../questionCard';
+import { VStack } from '@chakra-ui/react';
+import styles from './questionHistory.module.scss';
+import { Question } from '../../types';
 
 type Props = {
   questionList: Question[];
-  isOpen: boolean;
-  onClose: () => void;
+  skippedList: number[];
+  answeredNow: (id: number) => void;
 };
 
-const QuestionHistory = ({ questionList, isOpen, onClose }: Props) => {
+const QuestionHistory = ({ questionList, skippedList, answeredNow }: Props) => {
   const [orderedList, setOrderedList] = useState<Question[]>([]);
 
   useEffect(() => {
@@ -29,12 +23,17 @@ const QuestionHistory = ({ questionList, isOpen, onClose }: Props) => {
   return (
     <VStack
       spacing={4}
-      w="100%"
+      w='100%'
       className={styles.questionHistory}
-      style={{ overflow: "auto", maxHeight: "calc(100vh - 150)" }}
+      style={{ overflow: 'auto', maxHeight: 'calc(100vh - 150)' }}
     >
       {orderedList.map((item, index) => (
-        <QuestionCard question={item} key={index} />
+        <QuestionCard
+          question={item}
+          key={index}
+          isSkipped={skippedList.includes(item.id)}
+          answeredNow={() => answeredNow(item.id)}
+        />
       ))}
     </VStack>
   );
