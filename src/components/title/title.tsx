@@ -1,9 +1,13 @@
 import { Text } from "@chakra-ui/react";
 
-const Title = () => {
+type Props = {
+  value: string;
+};
+
+const Title = ({ value }: Props) => {
   return (
     <Text as="b" fontSize="3xl">
-      Answer Me This?
+      {value}
     </Text>
   );
 };

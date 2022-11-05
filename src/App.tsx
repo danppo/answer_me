@@ -12,7 +12,7 @@ export const App = () => (
       textAlign="center"
       justifyContent="center"
       fontSize="xl"
-      style={{ position: "relative" }}
+      style={{ position: "relative", height: "100vh" }}
       className="AppFlex"
     >
       <Flex

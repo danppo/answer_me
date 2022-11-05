@@ -1,10 +1,19 @@
-import { VStack, Button, ButtonGroup, IconButton } from "@chakra-ui/react";
-import { MdRedo } from "react-icons/md";
+import {
+  VStack,
+  Button,
+  ButtonGroup,
+  IconButton,
+  Slide,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { MdRedo, MdHistory, MdClose } from "react-icons/md";
 
 import { useEffect, useState } from "react";
 import QuestionCard from "../components/questionCard";
 import Filter from "../components/filter";
 import QuestionHistory from "../components/questionHistory";
+import classNames from "classnames";
+import styles from "./questions.module.scss";
 
 import questionData from "../questions.json";
 
@@ -28,6 +37,8 @@ const Questions = () => {
   const [filteredQuestions, setFilteredQuestions] = useState<Question[]>([]);
   const [selectedCats, setSelectedCats] = useState<string[]>([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [historyAvailable, setHistoryAvailable] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     const tempCat: string[] = [];
@@ -66,6 +77,12 @@ const Questions = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCats, availableQuestions]);
 
+  useEffect(() => {
+    questionHistory.length > 1
+      ? setHistoryAvailable(true)
+      : setHistoryAvailable(false);
+  }, [questionHistory]);
+
   // console.log(categoryList);
   // console.log(depthLevelList);
 
@@ -98,33 +115,61 @@ const Questions = () => {
 
   return (
     <VStack spacing={8} w="100%" className="Stack">
-      <IconButton
-        aria-label="Skip question"
-        icon={<MdRedo />}
-        alignSelf="end"
-        onClick={() => setShowHistory(!showHistory)}
-      />
-      {showHistory && <QuestionHistory questionList={questionHistory} />}
-      <QuestionCard question={questionHistory[0]} message={message} />
-
-      <ButtonGroup gap="2" width="100%">
-        <Filter categories={categoryList} selectedCats={setSelectedCats} />
-        <Button
-          onClick={handleNextQuestion}
-          colorScheme="teal"
-          size="lg"
-          width="100%"
-          height="56px"
-        >
-          {gameStarted ? "Next Question" : "Let's start"}
-        </Button>
+      {historyAvailable && (
         <IconButton
-          aria-label="Skip question"
-          icon={<MdRedo />}
-          height="56px"
-          width="74px"
+          aria-label="View History"
+          icon={showHistory ? <MdClose /> : <MdHistory />}
+          alignSelf="end"
+          onClick={() => setShowHistory(!showHistory)}
         />
-      </ButtonGroup>
+      )}
+      {showHistory && (
+        <QuestionHistory
+          questionList={questionHistory}
+          isOpen={isOpen}
+          onClose={onClose}
+        />
+      )}
+      {/* <Slide direction="right" in={showHistory}>
+      </Slide> */}
+
+      {!showHistory && (
+        <>
+          {/* {historyAvailable && (
+            <IconButton
+              aria-label="View History"
+              icon={showHistory ? <MdClose /> : <MdHistory />}
+              alignSelf="end"
+              onClick={() => setShowHistory(!showHistory)}
+            />
+          )} */}
+          <QuestionCard question={questionHistory[0]} message={message} />
+
+          <ButtonGroup
+            gap="2"
+            width="100%"
+            marginBottom="10px"
+            className={classNames({ [styles.bottomMargin]: historyAvailable })}
+          >
+            <Filter categories={categoryList} selectedCats={setSelectedCats} />
+            <Button
+              onClick={handleNextQuestion}
+              colorScheme="teal"
+              size="lg"
+              width="100%"
+              height="56px"
+            >
+              {gameStarted ? "Next Question" : "Let's start"}
+            </Button>
+            <IconButton
+              aria-label="Skip question"
+              icon={<MdRedo />}
+              height="56px"
+              width="74px"
+            />
+          </ButtonGroup>
+        </>
+      )}
     </VStack>
   );
 };
