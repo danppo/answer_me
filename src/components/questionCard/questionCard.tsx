@@ -1,4 +1,5 @@
-import { Flex, Badge, Text, useColorModeValue, Button, IconButton } from '@chakra-ui/react';
+import { Flex, Badge, Text, useColorModeValue, Button, IconButton, useToast } from '@chakra-ui/react';
+import { useEffect, useState } from 'react';
 import { MdContentCopy } from 'react-icons/md';
 import { Question } from '../../types';
 
@@ -15,8 +16,36 @@ const QuestionCard = ({ question, message, history, isSkipped, answeredNow }: Pr
   const shadow = useColorModeValue('xl', 'dark-lg');
   const questionStyle = isSkipped ? 'italic' : 'normal';
   const questionColour = isSkipped ? 'red.400' : undefined;
-
+  const toast = useToast();
   // function to handle copying and toast
+
+  const copyStringToClipboard = (str: string) => {
+    // Create new element
+    var el = document.createElement('textarea');
+    // Set value (string to be copied)
+    el.value = str;
+    // Set non-editable to avoid focus and move outside of view
+    el.setAttribute('readonly', '');
+    el.setAttribute('style', 'white-space: pre; position: absolute; left: -9999px;');
+    document.body.appendChild(el);
+    // Select text inside element
+    el.select();
+    // Copy text to clipboard
+    document.execCommand('copy');
+    // Remove temporary element
+    document.body.removeChild(el);
+ }
+
+  const handleClipboard = () => {
+    copyStringToClipboard(question.question);
+    toast({
+      description: "Coppied to clipboard.",
+      status: 'success',
+      duration: 2000,
+      isClosable: true,
+    })
+
+  }
 
   return (
     <Flex
@@ -44,14 +73,15 @@ const QuestionCard = ({ question, message, history, isSkipped, answeredNow }: Pr
           Answered now
         </Button>
       )}
-      <IconButton
-        aria-label='Skip question'
-        icon={<MdContentCopy />}
-        variant='ghost'
-        // set position
-        // onClick={handleSkipped}
-        // disabled={questionHistory.length === 0}
-      />
+      {!message && (
+        <IconButton
+          aria-label='Copy to Clipboard'
+          icon={<MdContentCopy />}
+          variant='ghost'
+          pos='absolute' top='6px' right='8px'
+          onClick={handleClipboard}
+        />
+      )}
       <Text fontSize='2xl' fontStyle={questionStyle} color={questionColour}>
         {message ? message : question.question}
       </Text>
