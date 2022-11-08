@@ -14,23 +14,24 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-import {
-  MdBuild,
-  MdCall,
-  MdFilterList,
-  MdRedo,
-  MdCheckCircle,
-} from "react-icons/md";
+import { MdFilterList, MdCheckCircle } from "react-icons/md";
 import { useEffect, useState } from "react";
 import styles from "./filter.module.scss";
 import classNames from "classnames";
 
 type Props = {
   categories: string[];
+  noQuestionsLeftCats: string[];
   selectedCats: (s: string[]) => void;
+  onCloseModal: () => void;
 };
 
-const Filter = ({ categories, selectedCats }: Props) => {
+const Filter = ({
+  categories,
+  selectedCats,
+  onCloseModal,
+  noQuestionsLeftCats,
+}: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [checkedItems, setCheckedItems] = useState([false]);
@@ -43,7 +44,6 @@ const Filter = ({ categories, selectedCats }: Props) => {
   }, [categories]);
 
   const allChecked = checkedItems.every(Boolean);
-  // const isIndeterminate = checkedItems.some(Boolean) && !allChecked;
   const [isInvalid, setIsInvalid] = useState(false);
 
   const handleSelectAllClose = () => {
@@ -70,6 +70,7 @@ const Filter = ({ categories, selectedCats }: Props) => {
   const handleClose = () => {
     if (!isInvalid) {
       onClose();
+      onCloseModal();
     }
   };
 
@@ -116,12 +117,17 @@ const Filter = ({ categories, selectedCats }: Props) => {
                     <Checkbox
                       key={key}
                       colorScheme="teal"
+                      disabled={noQuestionsLeftCats.includes(i)}
                       className={classNames([
                         isInvalid && styles.checkboxInvalid,
                         styles.checkbox,
                       ])}
                       // isInvalid={isInvalid}
-                      isChecked={checkedItems[key]}
+                      isChecked={
+                        !noQuestionsLeftCats.includes(i)
+                          ? checkedItems[key]
+                          : false
+                      }
                       onChange={(e) =>
                         handleSingleChecked(e.target.checked, key)
                       }

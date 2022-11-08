@@ -8,8 +8,7 @@
 - ~~show skipped in history~~
 - ~~fix app height to vh~~
 - ~~Hide depth level~~
-- refresh question after cats selected
-- show if cats are empty in the modal remaining numbers?
+- ~~refresh question after cats selected~~
 - Settings Modal
 - History numbers
 - History scroll location indicator

@@ -1,37 +1,34 @@
-import { VStack, Button, ButtonGroup, IconButton, useDisclosure } from '@chakra-ui/react';
-import { MdRedo, MdHistory, MdClose } from 'react-icons/md';
+import { VStack, Button, ButtonGroup, IconButton } from "@chakra-ui/react";
+import { MdRedo, MdHistory, MdClose } from "react-icons/md";
 
-import { useEffect, useState } from 'react';
-import QuestionCard from '../components/questionCard';
-import Filter from '../components/filter';
-import QuestionHistory from '../components/questionHistory';
-import classNames from 'classnames';
-import styles from './questions.module.scss';
+import { useEffect, useState } from "react";
+import QuestionCard from "../../components/questionCard";
+import Filter from "../../components/filter";
+import QuestionHistory from "../../components/questionHistory";
+import classNames from "classnames";
+import styles from "./questions.module.scss";
 
-import questionData from '../questions.json';
+import questionData from "../../questions.json";
 
-import { Question } from '../types';
-
-// interface Question {
-//   id: number;
-//   question: string;
-//   category?: string;
-//   deepness?: number;
-// }
+import { Question } from "../../types";
 
 const Questions = () => {
-  const [message, setMessage] = useState<string>('Press the button for the first question');
+  const [message, setMessage] = useState<string>(
+    "Press the button for the first question"
+  );
   const [categoryList, setCategoryList] = useState<string[]>([]);
   const [depthLevelList, setDepthLevelList] = useState<number[]>([]);
   const [questionHistory, setQuestionHistory] = useState<Question[]>([]);
   const [gameStarted, setGameStarted] = useState(false);
-  const [availableQuestions, setAvailableQuestions] = useState<Question[]>(questionData);
+  const [availableQuestions, setAvailableQuestions] =
+    useState<Question[]>(questionData);
   const [filteredQuestions, setFilteredQuestions] = useState<Question[]>([]);
   const [selectedCats, setSelectedCats] = useState<string[]>([]);
   const [skippedQuestions, setSkippedQuestions] = useState<number[]>([]);
   const [showHistory, setShowHistory] = useState(false);
   const [historyAvailable, setHistoryAvailable] = useState(false);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [catsNoQuestionsLeft, setCatsNoQuestionsLeft] = useState<string[]>([]);
+  const [questionButtonDisabled, setQuestionButtondisabled] = useState(false);
 
   // Fetch the catagory and depth lists
   useEffect(() => {
@@ -71,28 +68,40 @@ const Questions = () => {
 
   // Dertermine if history can be shown
   useEffect(() => {
-    questionHistory.length > 1 ? setHistoryAvailable(true) : setHistoryAvailable(false);
+    questionHistory.length > 1
+      ? setHistoryAvailable(true)
+      : setHistoryAvailable(false);
   }, [questionHistory]);
 
   const handleNextQuestion = () => {
     const length = filteredQuestions.length;
+
     if (length > 0) {
+      setMessage("");
       const chosen = Math.floor(Math.random() * length);
       const question = filteredQuestions[chosen];
       const tempArray = [...filteredQuestions];
       tempArray.splice(chosen, 1);
       setFilteredQuestions(tempArray);
 
-      setAvailableQuestions(availableQuestions.filter((q) => q.id !== question.id));
+      setAvailableQuestions(
+        availableQuestions.filter((q) => q.id !== question.id)
+      );
 
       setQuestionHistory((current) => [question, ...current]);
       if (!gameStarted) {
         setGameStarted(true);
-        setMessage('');
+        setMessage("");
       }
     } else {
+      setQuestionButtondisabled(true);
+      selectedCats.forEach((cat) => {
+        if (!catsNoQuestionsLeft.includes(cat)) {
+          setCatsNoQuestionsLeft([...catsNoQuestionsLeft, cat]);
+        }
+      });
       setMessage(
-        'No more questions left, either change the filter settings or rest all the questions'
+        "No more questions left, either change the filter settings or rest all the questions"
       );
     }
   };
@@ -101,18 +110,33 @@ const Questions = () => {
     handleNextQuestion();
   };
 
+  const handleSelectedCatChanges = () => {
+    if (questionHistory.length > 0) {
+      setQuestionButtondisabled(false);
+      if (
+        questionHistory[0].category &&
+        !selectedCats.includes(questionHistory[0].category)
+      ) {
+        const historyList = questionHistory;
+        historyList.shift();
+        setQuestionHistory(historyList);
+        handleNextQuestion();
+      }
+    }
+  };
+
   const answeredNow = (id: number) => {
     const removed = skippedQuestions.filter((i) => i !== id);
     setSkippedQuestions(removed);
   };
 
   return (
-    <VStack spacing={8} w='100%' className='Stack'>
+    <VStack spacing={8} w="100%" className="Stack">
       {historyAvailable && (
         <IconButton
-          aria-label='View History'
+          aria-label="View History"
           icon={showHistory ? <MdClose /> : <MdHistory />}
-          alignSelf='end'
+          alignSelf="end"
           onClick={() => setShowHistory(!showHistory)}
         />
       )}
@@ -128,26 +152,32 @@ const Questions = () => {
         <>
           <QuestionCard question={questionHistory[0]} message={message} />
           <ButtonGroup
-            gap='2'
-            width='100%'
-            marginBottom='10px'
+            gap="2"
+            width="100%"
+            marginBottom="10px"
             className={classNames({ [styles.bottomMargin]: historyAvailable })}
           >
-            <Filter categories={categoryList} selectedCats={setSelectedCats} />
+            <Filter
+              categories={categoryList}
+              selectedCats={setSelectedCats}
+              onCloseModal={handleSelectedCatChanges}
+              noQuestionsLeftCats={catsNoQuestionsLeft}
+            />
             <Button
               onClick={handleNextQuestion}
-              colorScheme='teal'
-              size='lg'
-              width='100%'
-              height='56px'
+              colorScheme="teal"
+              size="lg"
+              width="100%"
+              height="56px"
+              disabled={questionButtonDisabled}
             >
-              {gameStarted ? 'Next Question' : "Let's start"}
+              {gameStarted ? "Next Question" : "Let's start"}
             </Button>
             <IconButton
-              aria-label='Skip question'
+              aria-label="Skip question"
               icon={<MdRedo />}
-              height='56px'
-              width='74px'
+              height="56px"
+              width="74px"
               onClick={handleSkipped}
               disabled={questionHistory.length === 0}
             />
