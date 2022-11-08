@@ -1,0 +1,21 @@
+# Tasks to do
+
+- ~~Create Footer~~
+- ~~Move darkmode button and icons~~
+- ~~fix lightmode card~~
+- ~~Show history scroll~~
+- ~~allow skip button~~
+- ~~show skipped in history~~
+- ~~fix app height to vh~~
+- ~~Hide depth level~~
+- ~~refresh question after cats selected~~
+- Settings Modal
+- History numbers
+- History scroll location indicator
+-
+- make 2 person mode
+- copy question to clipboard
+- add logic to get questions deeper
+- walkthrough help
+- tidy up refactor
+- add unit tests
