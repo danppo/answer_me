@@ -22,50 +22,47 @@ import classNames from "classnames";
 type Props = {
   categories: string[];
   noQuestionsLeftCats: string[];
-  selectedCats: (s: string[]) => void;
+  selectedCats: string[];
+  setSelectedCats: (s: string[]) => void;
   onCloseModal: () => void;
 };
 
 const Filter = ({
   categories,
   selectedCats,
+  setSelectedCats,
   onCloseModal,
   noQuestionsLeftCats,
 }: Props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [checkedItems, setCheckedItems] = useState([false]);
-
-  useEffect(() => {
-    const temp: boolean[] = [];
-    temp.length = categories.length;
-    temp.fill(true);
-    setCheckedItems(temp);
-  }, [categories]);
-
-  const allChecked = checkedItems.every(Boolean);
+  const allChecked = categories.length === selectedCats.length;
   const [isInvalid, setIsInvalid] = useState(false);
 
   const handleSelectAllClose = () => {
-    const temp = [...checkedItems];
-    temp.fill(true);
-    setCheckedItems(temp);
+    setSelectedCats(categories);
     setTimeout(() => {
       setIsInvalid(false);
       onClose();
     }, 200);
   };
 
-  const handleSingleChecked = (checked: boolean, key: number) => {
-    const temp = [...checkedItems];
-    temp.splice(key, 1, checked);
-    if (temp.every((i) => i === false)) {
-      setIsInvalid(true);
+  const handleSingleChecked = (name: string, checked: boolean) => {
+    if (checked) {
+      setSelectedCats([...selectedCats, name]);
     } else {
-      setIsInvalid(false);
+      const tempCats = selectedCats;
+      setSelectedCats(tempCats.filter((cat) => cat !== name));
     }
-    setCheckedItems(temp);
   };
+
+  useEffect(() => {
+    if (selectedCats.length > 0) {
+      setIsInvalid(false);
+    } else {
+      setIsInvalid(true);
+    }
+  }, [selectedCats]);
 
   const handleClose = () => {
     if (!isInvalid) {
@@ -73,17 +70,6 @@ const Filter = ({
       onCloseModal();
     }
   };
-
-  useEffect(() => {
-    const includedCats: string[] = [];
-    checkedItems.forEach((c, key) => {
-      if (c) {
-        includedCats.push(categories[key]);
-      }
-    });
-    selectedCats(includedCats);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [checkedItems]);
 
   const FilterIcon = () => {
     return (
@@ -122,14 +108,15 @@ const Filter = ({
                         isInvalid && styles.checkboxInvalid,
                         styles.checkbox,
                       ])}
-                      // isInvalid={isInvalid}
+                      name={i}
+                      isInvalid={isInvalid}
                       isChecked={
                         !noQuestionsLeftCats.includes(i)
-                          ? checkedItems[key]
+                          ? selectedCats.includes(i)
                           : false
                       }
                       onChange={(e) =>
-                        handleSingleChecked(e.target.checked, key)
+                        handleSingleChecked(e.target.name, e.target.checked)
                       }
                     >
                       {i}

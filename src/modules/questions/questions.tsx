@@ -12,7 +12,11 @@ import questionData from "../../questions.json";
 
 import { Question } from "../../types";
 
-const Questions = () => {
+type Props = {
+  resetQuestionList: boolean;
+};
+
+const Questions = ({ resetQuestionList }: Props) => {
   const [message, setMessage] = useState<string>(
     "Press the button for the first question"
   );
@@ -29,6 +33,21 @@ const Questions = () => {
   const [historyAvailable, setHistoryAvailable] = useState(false);
   const [catsNoQuestionsLeft, setCatsNoQuestionsLeft] = useState<string[]>([]);
   const [questionButtonDisabled, setQuestionButtondisabled] = useState(false);
+  const [resetTrigger, setResetTrigger] = useState(false);
+
+  useEffect(() => {
+    if (resetTrigger !== resetQuestionList) {
+      setQuestionHistory([]);
+      setAvailableQuestions(questionData);
+      setGameStarted(false);
+      setSelectedCats(categoryList);
+      setSkippedQuestions([]);
+      setMessage("The questions and filters have been reset");
+      setCatsNoQuestionsLeft([]);
+
+      setResetTrigger(resetQuestionList);
+    }
+  }, [resetQuestionList, resetTrigger, categoryList]);
 
   // Fetch the catagory and depth lists
   useEffect(() => {
@@ -44,6 +63,7 @@ const Questions = () => {
     });
 
     setCategoryList(tempCat.sort());
+    setSelectedCats(tempCat.sort());
     setDepthLevelList(tempLevel.sort());
   }, []);
 
@@ -159,7 +179,8 @@ const Questions = () => {
           >
             <Filter
               categories={categoryList}
-              selectedCats={setSelectedCats}
+              selectedCats={selectedCats}
+              setSelectedCats={setSelectedCats}
               onCloseModal={handleSelectedCatChanges}
               noQuestionsLeftCats={catsNoQuestionsLeft}
             />

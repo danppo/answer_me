@@ -9,12 +9,12 @@
 - ~~fix app height to vh~~
 - ~~Hide depth level~~
 - ~~refresh question after cats selected~~
-- Settings Modal
-- History numbers
+- ~~copy question to clipboard~~
+- ~~Settings Modal~~
 - History scroll location indicator
+- Don't allow filter to be closed if only disabled cat is ticked
 -
 - make 2 person mode
-- copy question to clipboard
 - add logic to get questions deeper
 - walkthrough help
 - tidy up refactor
