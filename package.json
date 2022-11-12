@@ -49,5 +49,13 @@
   "devDependencies": {
     "gh-pages": "^4.0.0",
     "sass": "^1.55.0"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "!<rootDir>/src/reportWebVitals.ts",
+      "!<rootDir>/src/serviceWorker.ts",
+      "!<rootDir>/src/index.tsx",
+      "!<rootDir>/src/data/*"
+    ]
   }
 }
