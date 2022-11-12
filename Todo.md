@@ -19,3 +19,5 @@
 - walkthrough help
 - tidy up refactor
 - add unit tests
+- cypress testing
+- snapshot testing

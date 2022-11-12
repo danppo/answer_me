@@ -151,7 +151,7 @@ const Questions = ({ resetQuestionList }: Props) => {
   };
 
   return (
-    <VStack spacing={8} w="100%" className="Stack">
+    <VStack spacing={8} w="100%" className="Stack" data-testid="Questions">
       {historyAvailable && (
         <IconButton
           aria-label="View History"

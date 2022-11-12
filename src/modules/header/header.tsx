@@ -21,7 +21,7 @@ type Props = {
 const Header = ({ resetQuestions }: Props) => {
   const [multiPersonOpen, setMultiPersonOpen] = useState(false);
   return (
-    <Flex className={styles.header} justify="space-between">
+    <Flex className={styles.header} justify="space-between" data-testid="Header">
       <Menu>
         <MenuButton
           as={IconButton}

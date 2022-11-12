@@ -2,7 +2,7 @@ import Title from "../../components/title";
 
 const Footer = () => {
   return (
-    <div>
+    <div data-testid="Footer">
       <Title size="m" value="Copyright Danppo Github" />
     </div>
   );

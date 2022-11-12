@@ -14,6 +14,7 @@ const QuestionPage = () => {
       fontSize="xl"
       style={{ position: "relative", height: "100vh" }}
       className="AppFlex"
+      data-testid="QuestionPage"
     >
       <Flex
         minH="100vh"
