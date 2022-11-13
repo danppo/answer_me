@@ -21,6 +21,7 @@ const ColorModeSwitcher: React.FC<ColorModeSwitcherProps> = (props) => {
         icon={<SwitchIcon />}
         aria-label={`Switch to ${text} mode`}
         {...props}
+        data-testid='switcherButton'
       />
     </div>
   );
