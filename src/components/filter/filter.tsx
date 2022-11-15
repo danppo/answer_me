@@ -88,6 +88,7 @@ const Filter = ({
         icon={<FilterIcon />}
         height="56px"
         width="74px"
+        data-testid="FilterButton"
       />
 
       <Modal isOpen={isOpen} onClose={handleClose}>
