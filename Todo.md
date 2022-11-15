@@ -13,6 +13,7 @@
 - ~~Settings Modal~~
 - History scroll location indicator
 - Don't allow filter to be closed if only disabled cat is ticked
+- fix fullpage mode on phone (overlaps the browser menu)
 -
 - make 2 person mode
 - add logic to get questions deeper
