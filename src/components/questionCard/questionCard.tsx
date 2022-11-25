@@ -49,6 +49,7 @@ const QuestionCard = ({ question, message, isSkipped, answeredNow }: Props) => {
       justifyContent='center'
       alignItems='center'
       bg={background}
+      data-testid='historyQuestionCard'
     >
       {isSkipped && (
         <Button
@@ -58,6 +59,7 @@ const QuestionCard = ({ question, message, isSkipped, answeredNow }: Props) => {
           left='8px'
           size='xs'
           variant='outline'
+          data-testid='answeredNow'
         >
           Answered now
         </Button>
@@ -77,7 +79,7 @@ const QuestionCard = ({ question, message, isSkipped, answeredNow }: Props) => {
         fontSize='2xl'
         fontStyle={questionStyle}
         color={questionColour}
-        data-testid='QuestionCardContent'
+        data-testid='questionCardContent'
       >
         {message ? message : question.question}
       </Text>

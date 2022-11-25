@@ -14,10 +14,11 @@ import questionData from '../../data/questions.json';
 import { Question } from '../../types';
 
 type Props = {
-  resetQuestionList: boolean;
+  resetTrigger: boolean;
+  setResetTrigger: () => void;
 };
 
-const Questions = ({ resetQuestionList }: Props) => {
+const Questions = ({ resetTrigger, setResetTrigger }: Props) => {
   const [message, setMessage] = useState<string>('Press the button for the first question');
   const [categoryList, setCategoryList] = useState<string[]>([]);
   const [depthLevelList, setDepthLevelList] = useState<number[]>([]);
@@ -31,54 +32,52 @@ const Questions = ({ resetQuestionList }: Props) => {
   const [historyAvailable, setHistoryAvailable] = useState(false);
   const [catsNoQuestionsLeft, setCatsNoQuestionsLeft] = useState<string[]>([]);
   const [questionButtonDisabled, setQuestionButtondisabled] = useState(false);
-  const [resetTrigger, setResetTrigger] = useState(false);
 
   useEffect(() => {
-    if (resetTrigger !== resetQuestionList) {
-      setQuestionHistory([]);
-      setAvailableQuestions(questionData);
-      setGameStarted(false);
-      setSelectedCats(categoryList);
-      setSkippedQuestions([]);
-      setMessage('The questions and filters have been reset');
-      setCatsNoQuestionsLeft([]);
+    if (resetTrigger) {
+      console.log(gameStarted);
+      if (gameStarted) {
+        setQuestionHistory([]);
+        setAvailableQuestions(questionData);
+        setGameStarted(false);
+        setSelectedCats(categoryList);
+        setSkippedQuestions([]);
+        setMessage('The questions and filters have been reset');
+        setCatsNoQuestionsLeft([]);
+        setShowHistory(false);
+      }
 
-      setResetTrigger(resetQuestionList);
+      setResetTrigger();
     }
-  }, [resetQuestionList, resetTrigger, categoryList]);
+  }, [resetTrigger, setResetTrigger, gameStarted, categoryList]);
 
   // Fetch the catagory and depth lists
   useEffect(() => {
-    const tempCat: string[] = [];
-    const tempLevel: number[] = [];
+    const buildCatList: string[] = [];
+    const buildLevelList: number[] = [];
     questionData.forEach((q) => {
-      if (!tempCat.includes(q.category)) {
-        tempCat.push(q.category);
+      if (!buildCatList.includes(q.category)) {
+        buildCatList.push(q.category);
       }
-      if (!tempLevel.includes(q.deepness)) {
-        tempLevel.push(q.deepness);
+      if (!buildLevelList.includes(q.deepness)) {
+        buildLevelList.push(q.deepness);
       }
     });
 
-    setCategoryList(tempCat.sort());
-    setSelectedCats(tempCat.sort());
-    setDepthLevelList(tempLevel.sort());
+    setCategoryList(buildCatList.sort());
+    setSelectedCats(buildCatList.sort());
+    setDepthLevelList(buildLevelList.sort());
   }, []);
 
   // Filter questions if catagory selected
   useEffect(() => {
-    const tempQuestions: Question[] = [];
     if (categoryList.length === selectedCats.length) {
       setFilteredQuestions(availableQuestions);
     } else {
-      availableQuestions.forEach((q) => {
-        if (q.category && selectedCats.includes(q.category)) {
-          tempQuestions.push(q);
-        }
-      });
+      const buildFilteredList = availableQuestions.filter((q) => selectedCats.includes(q.category));
 
       if (selectedCats.length > 0) {
-        setFilteredQuestions(tempQuestions);
+        setFilteredQuestions(buildFilteredList);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -149,6 +148,7 @@ const Questions = ({ resetQuestionList }: Props) => {
           icon={showHistory ? <MdClose /> : <MdHistory />}
           alignSelf='end'
           onClick={() => setShowHistory(!showHistory)}
+          data-testid='historyButton'
         />
       )}
       {showHistory && (
@@ -193,6 +193,7 @@ const Questions = ({ resetQuestionList }: Props) => {
               width='74px'
               onClick={handleSkipped}
               disabled={questionHistory.length === 0}
+              data-testid='skipButton'
             />
           </ButtonGroup>
         </>

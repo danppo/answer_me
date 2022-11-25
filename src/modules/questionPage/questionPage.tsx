@@ -7,7 +7,6 @@ import { useState } from 'react';
 
 const QuestionPage = () => {
   const [resetQuestions, setResetQuestions] = useState(false);
-  const reset = () => setResetQuestions(!resetQuestions);
   return (
     <Flex
       textAlign='center'
@@ -25,8 +24,8 @@ const QuestionPage = () => {
         direction='column'
         justify='space-between'
       >
-        <Header resetQuestions={reset} />
-        <Questions resetQuestionList={resetQuestions} />
+        <Header resetQuestions={() => setResetQuestions(true)} />
+        <Questions resetTrigger={resetQuestions} setResetTrigger={() => setResetQuestions(false)} />
         <Footer />
       </Flex>
     </Flex>
